@@ -47,7 +47,7 @@ class App extends Component {
     if (usernameInput.length > 0) {
        this.send({
           type: "login",
-          usernameInput
+          name: usernameInput
        });
     }
   }
