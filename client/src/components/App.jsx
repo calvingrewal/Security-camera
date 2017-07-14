@@ -58,7 +58,7 @@ class App extends Component {
       this.setState({
         loggedIn: true
       })
-      navigator.webkitGetUserMedia({video: true, audio: true}, (stream) => {
+      navigator.webkitGetUserMedia({video: true, audio: false}, (stream) => {
         const config = {
          "iceServers": [{ "url": "stun:stun2.1.google.com:19302" }]
         }
