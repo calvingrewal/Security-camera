@@ -13,7 +13,9 @@ class App extends Component {
     super()
     this.state = {
       loggedIn: false,
-      connectedUser: null
+      connectedUser: null,
+      stream: null,
+      connection: null
     }
     socket.on('message', this.handleMessage)
   }
@@ -56,6 +58,38 @@ class App extends Component {
       this.setState({
         loggedIn: true
       })
+      navigator.webkitGetUserMedia({video: true, audio: true}, (stream) => {
+        const config = {
+         "iceServers": [{ "url": "stun:stun2.1.google.com:19302" }]
+        }
+        const connection = new webkitRTCPeerConnection(config)
+
+        this.setState({
+          localSrc: window.URL.createObjectURL(stream)
+        })
+
+        connection.addStream(stream)
+
+        connection.onaddstream = (e) => {
+          this.setState({
+            remoteSrc:  window.URL.createObjectURL(e.stream)
+          })
+        }
+        connection.onicecandidate = (e) => {
+          if (e.candidate) {
+             this.send({
+                type: "candidate",
+                candidate: e.candidate
+             });
+          }
+        }
+        this.setState({
+          stream,
+          connection
+        })
+      }, (err) => {
+        console.log('ERROR', err)
+      })
     }
   }
   handleOffer = offer => {
@@ -84,7 +118,10 @@ class App extends Component {
       <div className="App">
         {
           this.state.loggedIn ?
-            <Video />
+            <Video
+              localSrc={this.state.localSrc}
+              remoteSrc={this.state.remoteSrc}
+            />
             :
             <Login handleLoginBtnClick={this.handleLoginBtnClick}/>
         }
