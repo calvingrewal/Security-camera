@@ -19,7 +19,7 @@ io.on('connection', (socket) => {
 
   socket.on('message', (message) => {
     console.log('received message', message)
-    const data = JSON.parse(message)
+    const data = message
     const conn = users[data.name];
 
     switch (data.type) {
@@ -27,18 +27,18 @@ io.on('connection', (socket) => {
         console.log(data.name, 'logging in');
 
         if(users[data.name]) {
-          socket.send(JSON.stringify({
+          socket.send({
             type: "login",
             success: false
-          }));
+          })
         } else {
           users[data.name] = socket;
           socket.name = data.name;
 
-          socket.send(JSON.stringify({
+          socket.send({
             type: "login",
             success: true
-          }))
+          })
         }
         break;
       case "offer":
@@ -48,11 +48,11 @@ io.on('connection', (socket) => {
         if(conn != null) {
           socket.otherName = data.name;
 
-          socket.send(JSON.stringify({
+          socket.send({
             type: "offer",
             offer: data.offer,
             name: socket.name
-          }))
+          })
         }
         break;
       case "answer":
@@ -60,20 +60,20 @@ io.on('connection', (socket) => {
 
         if(conn != null) {
           socket.otherName = data.name;
-          socket.send(JSON.stringify({
+          socket.send({
             type: "answer",
             answer: data.answer
-          }))
+          })
         }
         break;
       case "candidate":
         console.log("Sending candidate to:",data.name);
 
         if(conn != null) {
-          socket.send(JSON.stringify({
+          socket.send({
             type: "candidate",
             candidate: data.candidate
-          }))
+          })
         }
         break;
       case "leave":
@@ -81,9 +81,9 @@ io.on('connection', (socket) => {
         conn.otherName = null;
 
         if(conn != null) {
-          socket.send(JSON.stringify({
+          socket.send({
             type: "leave"
-          }))
+          })
         }
 
         break;
@@ -100,9 +100,9 @@ io.on('connection', (socket) => {
         conn.otherName = null;
 
         if(conn != null) {
-          socket.send(JSON.stringify({
+          socket.send({
              type: "leave"
-          }))
+          })
         }
       }
     }
