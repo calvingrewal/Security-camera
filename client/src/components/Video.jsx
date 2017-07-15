@@ -10,6 +10,9 @@ class Video extends Component {
       this.remoteVideo.src = remoteSrc
     }
   }
+  handleCall = () => {
+    this.props.handleCall(this.callInput.value)
+  }
   render() {
 
     return (
@@ -18,8 +21,8 @@ class Video extends Component {
         <video ref={(video) => this.remoteVideo=video} autoPlay></video>
 
         <div class = "row text-center">
-            <input type="text" placeholder="username to call" />
-            <button>Call</button>
+            <input ref={(input) => this.callInput=input} type="text" placeholder="username to call" />
+            <button onClick={this.handleCall}>Call</button>
             <button>Hang Up</button>
         </div>
 
