@@ -113,10 +113,12 @@ class App extends Component {
 
   }
   handleAnswer = answer => {
-
+    const { connection } = this.state
+    connection.setRemoteDescription(new RTCSessionDescription(answer))
   }
   handleCandidate = candidate => {
-
+    const { connection } = this.state
+    connection.addIceCandidate(new RTCIceCandidate(candidate));
   }
   handleLeave = () => {
 
